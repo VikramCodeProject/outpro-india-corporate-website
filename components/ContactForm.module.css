@@ -1,0 +1,178 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--paper);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  background-color: var(--slate);
+  border: 1px solid rgba(200, 169, 110, 0.2);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  transition: all var(--transition-base);
+}
+
+.input::placeholder {
+  color: var(--mist);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 150px;
+  font-family: var(--font-sans);
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--gold);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkboxLabel {
+  font-size: var(--text-sm);
+  color: var(--mist);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.checkbox:checked + .checkboxLabel {
+  color: var(--gold);
+}
+
+.checkboxLabel:hover {
+  color: var(--gold);
+}
+
+.submitBtn {
+  background-color: var(--gold);
+  color: var(--ink);
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 12px rgba(200, 169, 110, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 169, 110, 0.35);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(10, 10, 15, 0.3);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.successMessage,
+.errorMessage {
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  animation: slideInDown 0.4s ease-out;
+}
+
+.successMessage {
+  background-color: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  color: var(--success);
+}
+
+.errorMessage {
+  background-color: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  color: var(--error);
+}
+
+.checkmark,
+.errorIcon {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.successMessage p,
+.errorMessage p {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .input,
+  .submitBtn {
+    font-size: var(--text-sm);
+    padding: var(--spacing-md);
+  }
+
+  .textarea {
+    min-height: 120px;
+  }
+}

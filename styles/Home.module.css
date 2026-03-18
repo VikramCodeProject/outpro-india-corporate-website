@@ -1,0 +1,218 @@
+.servicesSection,
+.portfolioSection,
+.testimonialsSection,
+.contactSection {
+  width: 100%;
+  padding: var(--spacing-5xl) var(--spacing-lg);
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-4xl);
+}
+
+.sectionHeader h2 {
+  font-family: var(--font-serif);
+  font-size: var(--text-6xl);
+  color: var(--paper);
+  margin-bottom: var(--spacing-lg);
+}
+
+.sectionHeader p {
+  font-size: var(--text-lg);
+  color: var(--mist);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Services Grid */
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-2xl);
+}
+
+@media (max-width: 1024px) {
+  .servicesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .servicesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Portfolio Grid */
+.portfolioGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
+}
+
+/* Testimonials Grid */
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-2xl);
+}
+
+@media (max-width: 1024px) {
+  .testimonialsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonialsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Contact Section */
+.contactSection {
+  background-color: var(--slate);
+  border-top: 3px solid var(--gold);
+}
+
+.contactWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4xl);
+  align-items: start;
+}
+
+.formCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.contactTitle {
+  font-family: var(--font-serif);
+  font-size: var(--text-5xl);
+  color: var(--paper);
+  margin-bottom: var(--spacing-lg);
+}
+
+.contactSubtitle {
+  font-size: var(--text-lg);
+  color: var(--mist);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.infoCol {
+  display: flex;
+}
+
+.infoBox {
+  background-color: var(--ink);
+  border: 1px solid rgba(200, 169, 110, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-2xl);
+  width: 100%;
+}
+
+.infoTitle {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid rgba(200, 169, 110, 0.2);
+}
+
+.infoItem {
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.infoItem:last-child {
+  margin-bottom: 0;
+}
+
+.infoLabel {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.infoLink,
+.infoText {
+  font-size: var(--text-base);
+  color: var(--paper);
+  margin: 0;
+  line-height: var(--leading-relaxed);
+}
+
+.infoLink {
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.infoLink:hover {
+  color: var(--gold);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .servicesSection,
+  .portfolioSection,
+  .testimonialsSection,
+  .contactSection {
+    padding: var(--spacing-3xl) var(--spacing-lg);
+  }
+
+  .sectionHeader {
+    margin-bottom: var(--spacing-3xl);
+  }
+
+  .sectionHeader h2 {
+    font-size: var(--text-5xl);
+  }
+
+  .contactWrapper {
+    gap: var(--spacing-2xl);
+    grid-template-columns: 1fr;
+  }
+
+  .contactTitle {
+    font-size: var(--text-4xl);
+  }
+}
+
+@media (max-width: 768px) {
+  .sectionHeader h2 {
+    font-size: var(--text-4xl);
+  }
+
+  .sectionHeader p {
+    font-size: var(--text-base);
+  }
+
+  .contactTitle {
+    font-size: var(--text-3xl);
+  }
+
+  .contactSubtitle {
+    font-size: var(--text-base);
+  }
+
+  .infoBox {
+    padding: var(--spacing-xl);
+  }
+}
