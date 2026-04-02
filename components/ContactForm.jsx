@@ -77,42 +77,61 @@ const ContactForm = () => {
 
     setStatus({ submitted: false, error: null, loading: true });
 
+    const submitViaApi = async () => {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const apiUrl = baseUrl ? `${baseUrl}/api/contact` : '/api/contact';
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.from_name,
+          email: formData.from_email,
+          company: formData.company,
+          service: formData.service,
+          message: formData.message,
+        }),
+      });
+
+      let data = null;
+      try {
+        data = await response.json();
+      } catch (_) {
+        data = null;
+      }
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Form submission failed');
+      }
+    };
+
     try {
       // Option 1: Send via EmailJS (frontend)
-      if (
+      const canUseEmailJs =
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID &&
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
-      ) {
-        const result = await emailjs.sendForm(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-          formRef.current
-        );
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID &&
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-        if (result.status !== 200) {
-          throw new Error('EmailJS submission failed');
+      if (canUseEmailJs) {
+        try {
+          const result = await emailjs.sendForm(
+            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+            process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+            formRef.current
+          );
+
+          if (result.status !== 200) {
+            throw new Error('EmailJS submission failed');
+          }
+        } catch (emailJsError) {
+          // Fallback to backend API if EmailJS is misconfigured or unavailable.
+          await submitViaApi();
         }
       } else {
         // Option 2: Send via Next.js API route (backend)
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: formData.from_name,
-            email: formData.from_email,
-            company: formData.company,
-            service: formData.service,
-            message: formData.message,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Form submission failed');
-        }
+        await submitViaApi();
       }
 
       setStatus({ submitted: true, error: null, loading: false });
