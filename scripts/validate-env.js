@@ -86,6 +86,19 @@ if (missingOptional.length > 0) {
 }
 
 if (hasErrors) {
+  const isCiEnvironment = Boolean(process.env.CI || process.env.VERCEL);
+
+  if (isCiEnvironment) {
+    console.log('⚠️  CI/Vercel environment detected.');
+    console.log('   Skipping hard failure for missing local backend variables during install.\n');
+    console.log('Missing variables (non-blocking in CI):');
+    missingRequired.forEach(key => {
+      console.log(`  • ${key}`);
+    });
+    console.log();
+    process.exit(0);
+  }
+
   console.log('❌ ERRORS: Missing required environment variables:\n');
   missingRequired.forEach(key => {
     console.log(`  • ${key}`);
