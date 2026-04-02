@@ -94,6 +94,14 @@
   width: 100%;
 }
 
+.navLink.active {
+  color: var(--gold);
+}
+
+.navLink.active::after {
+  width: 100%;
+}
+
 /* CTA Button */
 .ctaButton.desktop {
   display: flex;
@@ -121,6 +129,30 @@
 
 .getInTouchBtn:active {
   transform: translateY(0);
+}
+
+.getInTouchBtn.ctaActive {
+  box-shadow: 0 0 0 1px rgba(200, 169, 110, 0.6), 0 6px 18px rgba(200, 169, 110, 0.28);
+}
+
+.progressTrack {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(520px, 64vw);
+  height: 2px;
+  background: rgba(200, 169, 110, 0.16);
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, rgba(200, 169, 110, 0.45), var(--gold));
+  transition: width 360ms ease;
 }
 
 /* Mobile Menu Toggle */
@@ -233,6 +265,10 @@
   color: var(--gold);
 }
 
+.mobileNavLinkActive {
+  color: var(--gold);
+}
+
 .mobileCtaButton {
   margin-top: var(--spacing-2xl);
 }
@@ -269,6 +305,10 @@
 
   .navbar {
     padding: var(--spacing-md) 0;
+  }
+
+  .progressTrack {
+    display: none;
   }
 
   .logo a {

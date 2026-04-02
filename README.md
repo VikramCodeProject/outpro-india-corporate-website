@@ -23,7 +23,17 @@ outpro-india/
 │   └── Footer.module.css       # Footer styles
 ├── pages/
 │   ├── index.jsx               # Main page
-│   └── layout.jsx              # Root layout
+│   ├── _app.js                 # App shell and GA4 bootstrap
+│   └── _document.js            # Global document shell
+├── docs/
+│   ├── architecture/           # Architecture references
+│   ├── deployment/             # Deployment runbooks and checklist
+│   ├── guides/                 # Setup and quick-start guides
+│   ├── reports/                # Implementation and completion reports
+│   └── specs/                  # Product/wireframe specs
+├── scripts/
+│   ├── deployment-checklist.sh # Automated deployment QA checks
+│   └── test-api.sh             # Contact API test script
 ├── styles/
 │   ├── globals.css             # Global styles & CSS variables
 │   └── Home.module.css         # Page-specific styles

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import styles from './Hero.module.css';
+import { trackCTAClick } from '@/lib/ga4-analytics';
 
 const Hero = () => {
   const scrollToSection = (sectionId) => {
@@ -24,14 +25,20 @@ const Hero = () => {
 
         <div className={styles.ctaButtonGroup}>
           <button
-            onClick={() => scrollToSection('contact')}
+            onClick={() => {
+              trackCTAClick('Get Started', 'hero');
+              scrollToSection('contact');
+            }}
             className={styles.primaryCta}
           >
             Get Started
             <span className={styles.arrow}>→</span>
           </button>
           <button
-            onClick={() => scrollToSection('portfolio')}
+            onClick={() => {
+              trackCTAClick('Explore Our Work', 'hero');
+              scrollToSection('portfolio');
+            }}
             className={styles.secondaryCta}
           >
             Explore Our Work
