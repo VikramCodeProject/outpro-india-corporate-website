@@ -86,7 +86,7 @@ if (missingOptional.length > 0) {
 }
 
 if (hasErrors) {
-  const isCiEnvironment = Boolean(process.env.CI || process.env.VERCEL);
+  const isCiEnvironment = Boolean(process.env.CI || process.env.VERCEL || process.env.RENDER);
 
   if (isCiEnvironment) {
     console.log('⚠️  CI/Vercel environment detected.');
