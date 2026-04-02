@@ -158,6 +158,11 @@ All colors, spacing, and typography use CSS variables defined in `globals.css`. 
 }
 ```
 
+## 🚀 Deployment Runbook
+
+- Production rollout guide: [docs/deployment/PRODUCTION_ROLLOUT_RUNBOOK.md](docs/deployment/PRODUCTION_ROLLOUT_RUNBOOK.md)
+- Deployment checklist: [docs/deployment/DEPLOYMENT_CHECKLIST.md](docs/deployment/DEPLOYMENT_CHECKLIST.md)
+
 ## 📄 License
 
 © 2024 Outpro.India. All rights reserved.
