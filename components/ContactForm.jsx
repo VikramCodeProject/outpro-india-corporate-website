@@ -5,6 +5,20 @@ import emailjs from '@emailjs/browser';
 import styles from './ContactForm.module.css';
 import { trackFormSubmission } from '@/lib/ga4-analytics';
 
+const REQUEST_TIMEOUT_MS = 15000;
+
+const withTimeout = (promise, timeoutMs, timeoutMessage) => {
+  let timerId;
+
+  const timeoutPromise = new Promise((_, reject) => {
+    timerId = setTimeout(() => reject(new Error(timeoutMessage)), timeoutMs);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    clearTimeout(timerId);
+  });
+};
+
 const ContactForm = () => {
   const formRef = useRef();
   const [formData, setFormData] = useState({
@@ -99,13 +113,19 @@ const ContactForm = () => {
 
       for (const apiUrl of candidateUrls) {
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
           const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: payload,
+            signal: controller.signal,
           });
+
+          clearTimeout(timeoutId);
 
           let data = null;
           try {
@@ -120,6 +140,10 @@ const ContactForm = () => {
 
           lastError = new Error(data?.message || `Form submission failed (${response.status})`);
         } catch (requestError) {
+          if (requestError?.name === 'AbortError') {
+            lastError = new Error('Request timed out. Please try again.');
+            continue;
+          }
           lastError = requestError;
         }
       }
@@ -136,10 +160,14 @@ const ContactForm = () => {
 
       if (canUseEmailJs) {
         try {
-          const result = await emailjs.sendForm(
-            process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-            process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-            formRef.current
+          const result = await withTimeout(
+            emailjs.sendForm(
+              process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+              process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+              formRef.current
+            ),
+            REQUEST_TIMEOUT_MS,
+            'Email service timeout. Trying backup route...'
           );
 
           if (result.status !== 200) {
