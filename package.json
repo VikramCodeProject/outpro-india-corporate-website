@@ -2,6 +2,10 @@
   "name": "outpro-india",
   "version": "1.0.0",
   "description": "Outpro.India - Premium Digital Agency Website",
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
