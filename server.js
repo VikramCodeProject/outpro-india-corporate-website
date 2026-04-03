@@ -134,38 +134,56 @@ app.post('/api/contact', async (req, res) => {
       <p><small>Submitted on: ${new Date().toLocaleString()}</small></p>
     `;
 
-    // Send email to admin
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: CONTACT_RECIPIENT,
-      replyTo: sanitizedData.email,
-      subject: `New Contact Form Submission - ${sanitizedData.name}`,
-      html: emailContent,
-    });
+    const emailStatus = {
+      adminNotification: 'skipped',
+      userConfirmation: 'skipped',
+    };
+
+    // Do not block form submissions if SMTP is temporarily failing.
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: CONTACT_RECIPIENT,
+        replyTo: sanitizedData.email,
+        subject: `New Contact Form Submission - ${sanitizedData.name}`,
+        html: emailContent,
+      });
+      emailStatus.adminNotification = 'sent';
+    } catch (emailError) {
+      emailStatus.adminNotification = 'failed';
+      console.error('Admin notification email failed:', emailError);
+    }
 
     // Optional: Send confirmation email to user
     if (process.env.SEND_CONFIRMATION_EMAIL === 'true') {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: sanitizedData.email,
-        subject: 'We received your message - Outpro.India',
-        html: `
-          <h2>Thank you for contacting Outpro.India</h2>
-          <p>Hi ${sanitizedData.name},</p>
-          <p>We have received your message and will get back to you shortly.</p>
-          <p>Best regards,<br>Outpro.India Team</p>
-        `,
-      });
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: sanitizedData.email,
+          subject: 'We received your message - Outpro.India',
+          html: `
+            <h2>Thank you for contacting Outpro.India</h2>
+            <p>Hi ${sanitizedData.name},</p>
+            <p>We have received your message and will get back to you shortly.</p>
+            <p>Best regards,<br>Outpro.India Team</p>
+          `,
+        });
+        emailStatus.userConfirmation = 'sent';
+      } catch (emailError) {
+        emailStatus.userConfirmation = 'failed';
+        console.error('User confirmation email failed:', emailError);
+      }
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Form submitted successfully',
+      message: 'Form received successfully',
       data: {
         submittedAt: new Date().toISOString(),
         name: sanitizedData.name,
         email: sanitizedData.email,
         recipient: CONTACT_RECIPIENT,
+        emailStatus,
       },
     });
   } catch (error) {

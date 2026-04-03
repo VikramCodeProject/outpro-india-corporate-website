@@ -98,14 +98,25 @@ export default async function handler(req, res) {
       </div>
     `;
 
-    // Send email to admin
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: CONTACT_RECIPIENT,
-      replyTo: sanitizedData.email,
-      subject: `🎯 New Contact: ${sanitizedData.name}`,
-      html: adminEmailHtml,
-    });
+    const emailStatus = {
+      adminNotification: 'skipped',
+      userConfirmation: 'skipped',
+    };
+
+    // Do not block form submissions if SMTP is temporarily failing.
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: CONTACT_RECIPIENT,
+        replyTo: sanitizedData.email,
+        subject: `🎯 New Contact: ${sanitizedData.name}`,
+        html: adminEmailHtml,
+      });
+      emailStatus.adminNotification = 'sent';
+    } catch (emailError) {
+      emailStatus.adminNotification = 'failed';
+      console.error('Admin notification email failed:', emailError);
+    }
 
     // Send confirmation email to user (optional)
     if (process.env.SEND_CONFIRMATION_EMAIL === 'true') {
@@ -124,23 +135,30 @@ export default async function handler(req, res) {
         </div>
       `;
 
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: sanitizedData.email,
-        subject: 'We received your message - Outpro.India',
-        html: userEmailHtml,
-      });
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: sanitizedData.email,
+          subject: 'We received your message - Outpro.India',
+          html: userEmailHtml,
+        });
+        emailStatus.userConfirmation = 'sent';
+      } catch (emailError) {
+        emailStatus.userConfirmation = 'failed';
+        console.error('User confirmation email failed:', emailError);
+      }
     }
 
     // Success response
     return res.status(200).json({
       success: true,
-      message: 'Form submitted successfully',
+      message: 'Form received successfully',
       data: {
         submittedAt: new Date().toISOString(),
         name: sanitizedData.name,
         email: sanitizedData.email,
         recipient: CONTACT_RECIPIENT,
+        emailStatus,
       },
     });
   } catch (error) {
