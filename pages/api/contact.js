@@ -8,6 +8,11 @@
 
 import nodemailer from 'nodemailer';
 
+const CONTACT_RECIPIENT =
+  process.env.CONTACT_RECEIVER_EMAIL ||
+  process.env.EMAIL_USER ||
+  'hello@outpro.india';
+
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE || 'gmail',
@@ -96,7 +101,7 @@ export default async function handler(req, res) {
     // Send email to admin
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: 'hello@outpro.india',
+      to: CONTACT_RECIPIENT,
       replyTo: sanitizedData.email,
       subject: `🎯 New Contact: ${sanitizedData.name}`,
       html: adminEmailHtml,
@@ -135,6 +140,7 @@ export default async function handler(req, res) {
         submittedAt: new Date().toISOString(),
         name: sanitizedData.name,
         email: sanitizedData.email,
+        recipient: CONTACT_RECIPIENT,
       },
     });
   } catch (error) {

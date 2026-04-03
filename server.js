@@ -10,6 +10,10 @@ const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const CONTACT_RECIPIENT =
+  process.env.CONTACT_RECEIVER_EMAIL ||
+  process.env.EMAIL_USER ||
+  'hello@outpro.india';
 
 // Middleware
 app.use(express.json());
@@ -133,7 +137,7 @@ app.post('/api/contact', async (req, res) => {
     // Send email to admin
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: 'hello@outpro.india',
+      to: CONTACT_RECIPIENT,
       replyTo: sanitizedData.email,
       subject: `New Contact Form Submission - ${sanitizedData.name}`,
       html: emailContent,
@@ -161,6 +165,7 @@ app.post('/api/contact', async (req, res) => {
         submittedAt: new Date().toISOString(),
         name: sanitizedData.name,
         email: sanitizedData.email,
+        recipient: CONTACT_RECIPIENT,
       },
     });
   } catch (error) {
