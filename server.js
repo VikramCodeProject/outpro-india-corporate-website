@@ -16,8 +16,31 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS Configuration
+const allowedOrigins = new Set(
+  [
+    process.env.FRONTEND_URL,
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+  ]
+    .filter(Boolean)
+    .flatMap((value) => value.split(',').map((item) => item.trim()))
+);
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (
+      allowedOrigins.has(origin) ||
+      /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'OPTIONS'],
@@ -25,6 +48,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Nodemailer Configuration
 const transporter = nodemailer.createTransport({
