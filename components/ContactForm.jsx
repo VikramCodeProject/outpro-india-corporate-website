@@ -78,33 +78,53 @@ const ContactForm = () => {
     setStatus({ submitted: false, error: null, loading: true });
 
     const submitViaApi = async () => {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-      const apiUrl = baseUrl ? `${baseUrl}/api/contact` : '/api/contact';
+      const configuredBase = process.env.NEXT_PUBLIC_API_URL || '';
+      const fallbackRenderBase = 'https://outpro-india-corporate-website.onrender.com';
 
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.from_name,
-          email: formData.from_email,
-          company: formData.company,
-          service: formData.service,
-          message: formData.message,
-        }),
+      const candidateUrls = [
+        configuredBase ? `${configuredBase}/api/contact` : null,
+        `${fallbackRenderBase}/api/contact`,
+        '/api/contact',
+      ].filter((url, index, arr) => url && arr.indexOf(url) === index);
+
+      const payload = JSON.stringify({
+        name: formData.from_name,
+        email: formData.from_email,
+        company: formData.company,
+        service: formData.service,
+        message: formData.message,
       });
 
-      let data = null;
-      try {
-        data = await response.json();
-      } catch (_) {
-        data = null;
+      let lastError = null;
+
+      for (const apiUrl of candidateUrls) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: payload,
+          });
+
+          let data = null;
+          try {
+            data = await response.json();
+          } catch (_) {
+            data = null;
+          }
+
+          if (response.ok) {
+            return;
+          }
+
+          lastError = new Error(data?.message || `Form submission failed (${response.status})`);
+        } catch (requestError) {
+          lastError = requestError;
+        }
       }
 
-      if (!response.ok) {
-        throw new Error(data?.message || 'Form submission failed');
-      }
+      throw lastError || new Error('Form submission failed');
     };
 
     try {
