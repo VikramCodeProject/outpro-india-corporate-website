@@ -12,8 +12,7 @@
     "validate-env": "node scripts/validate-env.js",
     "test:contact-api": "curl -X POST http://localhost:5000/api/contact -H 'Content-Type: application/json' -d '{\"name\": \"Test User\", \"email\": \"test@example.com\", \"company\": \"Test Corp\", \"service\": \"web-development\", \"message\": \"Test message\"}'",
     "test:api:script": "bash scripts/test-api.sh",
-    "checklist:deploy": "bash scripts/deployment-checklist.sh",
-    "postinstall": "npm run validate-env"
+    "checklist:deploy": "bash scripts/deployment-checklist.sh"
   },
   "dependencies": {
     "cors": "^2.8.5",
